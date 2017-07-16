@@ -11,11 +11,11 @@ $(if $(GOROOT),,$(error GOROOT is not set!))
 endif
 
 all:
-	make xdump978 xdump1090 xgen_gdl90 $(PLATFORMDEPENDENT)
+	make xdump978 xdump1090 xflarmdecode xgen_gdl90 $(PLATFORMDEPENDENT)
 
 xgen_gdl90:
 	go get -t -d -v ./main ./test ./godump978 ./uatparse ./sensors
-	go build $(BUILDINFO) -p 4 main/gen_gdl90.go main/traffic.go main/gps.go main/network.go main/managementinterface.go main/sdr.go main/ping.go main/uibroadcast.go main/monotonic.go main/datalog.go main/equations.go main/sensors.go main/cputemp.go
+	go build $(BUILDINFO) -p 4 main/gen_gdl90.go main/traffic.go main/gps.go main/network.go main/managementinterface.go main/sdr.go main/ping.go main/uibroadcast.go main/monotonic.go main/datalog.go main/equations.go main/sensors.go main/cputemp.go main/flarm.go
 
 fancontrol:
 	go get -t -d -v ./main
@@ -28,6 +28,9 @@ xdump1090:
 xdump978:
 	cd dump978 && make lib
 	sudo cp -f ./libdump978.so /usr/lib/libdump978.so
+
+xflarmdecode:
+	cd flarm && make
 
 .PHONY: test
 test:
@@ -56,8 +59,11 @@ install:
 	cp -f dump1090/dump1090 /usr/bin/
 	cp -f image/hostapd_manager.sh /usr/sbin/
 	cp -f image/stratux-wifi.sh /usr/sbin/
+	cp -f flarm/nrf905_demod /usr/bin/
+	cp -f flarm/flarm_decode /usr/bin/
 
 clean:
 	rm -f gen_gdl90 libdump978.so fancontrol
 	cd dump1090 && make clean
 	cd dump978 && make clean
+	cd flarm && make clean
