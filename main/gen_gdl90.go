@@ -417,7 +417,7 @@ func makeOwnshipReport() bool {
 	msg[25] = 0x78
 
 	sendGDL90(prepareMessage(msg), false)
-	sendXPlane(createXPlaneGpsMsg(lat, lon, mySituation.GPSAltitudeMSL), false)
+	sendXPlane(createXPlaneGpsMsg(lat, lon, mySituation.GPSAltitudeMSL, groundTrack, float32(gdSpeed)), false)
 
 	return true
 }
